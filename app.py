@@ -8,4 +8,7 @@ def home():
 
     df = pd.read_csv("results.csv")
 
-    return df.to_html(index=False)
+   return f"""
+<h1>Bathing Water Results</h1>
+{df.to_html(index=False)}
+"""
