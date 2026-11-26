@@ -17,3 +17,6 @@ def home():
     <h1>Bathing Water Results</h1>
     {df.to_html(index=False)}
     """
+
+if __name__ == "__main__":
+    app.run()
