@@ -5,6 +5,7 @@ app = Flask(__name__)
 @app.route("/")
 def home():
     return """
-    <h1>Hello Ashley!</h1>
-    <p>My first Azure web app using GitHub!</p>
-    """
+<h1>Water Quality Dashboard</h1>
+<p>Testing Azure deployment.</p>
+<p>Site count: 25</p>
+"""
