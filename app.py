@@ -1,14 +1,11 @@
 from flask import Flask
+import pandas as pd
 
 app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return """
-    <h1>Bathing Water Dashboard</h1>
-    <ul>
-        <li>Shrewsbury</li>
-        <li>Ironbridge</li>
-        <li>Ludlow</li>
-    </ul>
-    """
+
+    df = pd.read_csv("results.csv")
+
+    return df.to_html(index=False)
