@@ -1,38 +1,32 @@
-from flask import Flask, request
-import pandas as pd
+from flask import Flask
+from azure.identity import ManagedIdentityCredential
 
 app = Flask(__name__)
 
 @app.route("/")
 def home():
 
-    df = pd.read_csv("results.csv")
+    try:
 
-    site = request.args.get("site", "")
+        credential = ManagedIdentityCredential()
 
-    if site:
-        df_filtered = df[df["Site"] == site]
-    else:
-        df_filtered = df
+        token = credential.get_token(
+            "https://graph.microsoft.com/.default"
+        )
 
-    options = ""
+        return f"""
+        <h1>Managed Identity Test</h1>
+        <p>Success ✅</p>
+        <p>Token obtained successfully.</p>
+        """
 
-    for s in df["Site"].unique():
-        selected = "selected" if s == site else ""
-        options += f'<option value="{s}" {selected}>{s}</option>'
+    except Exception as e:
 
-    return f"""
-    <h1>Bathing Water Results</h1>
+        return f"""
+        <h1>Managed Identity Test</h1>
+        <p>Failed ❌</p>
+        <pre>{str(e)}</pre>
+        """
 
-    <form method="get">
-        <select name="site">
-            <option value="">All Sites</option>
-            {options}
-        </select>
-        <input type="submit" value="Filter">
-    </form>
-
-    <br>
-
-    {df_filtered.to_html(index=False)}
-    """
+if __name__ == "__main__":
+    app.run()
