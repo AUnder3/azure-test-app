@@ -1,32 +1,32 @@
 from flask import Flask
 from azure.identity import ManagedIdentityCredential
+import requests
 
 app = Flask(__name__)
 
 @app.route("/")
 def home():
 
-    try:
+    credential = ManagedIdentityCredential()
 
-        credential = ManagedIdentityCredential()
+    token = credential.get_token(
+        "https://graph.microsoft.com/.default"
+    )
 
-        token = credential.get_token(
-            "https://graph.microsoft.com/.default"
-        )
+    headers = {
+        "Authorization": f"Bearer {token.token}"
+    }
 
-        return f"""
-        <h1>Managed Identity Test</h1>
-        <p>Success ✅</p>
-        <p>Token obtained successfully.</p>
-        """
+    response = requests.get(
+        "https://graph.microsoft.com/v1.0/sites?search=MicrobiologicalTools",
+        headers=headers
+    )
 
-    except Exception as e:
-
-        return f"""
-        <h1>Managed Identity Test</h1>
-        <p>Failed ❌</p>
-        <pre>{str(e)}</pre>
-        """
+    return f"""
+    <h1>Graph Test</h1>
+    <pre>{response.status_code}</pre>
+    <pre>{response.text}</pre>
+    """
 
 if __name__ == "__main__":
     app.run()
